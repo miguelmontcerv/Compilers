@@ -127,6 +127,14 @@ public class ventana extends JFrame{
         button12.setBackground(new Color(29,35,57));
         button12.setForeground(Color.white);
         
+        JButton button13 = new JButton("Crear Tabla LL1");
+        button13.setFocusPainted(false);
+        button13.setMargin(new Insets(0, 0, 0, 0));        
+        button13.setBorderPainted(false);
+        button13.setOpaque(true);
+        button13.setBackground(new Color(29,35,57));
+        button13.setForeground(Color.white);
+        
         JButton buttonSALIR = new JButton("Salir");
         buttonSALIR.setFocusPainted(false);
         buttonSALIR.setMargin(new Insets(0, 0, 0, 0));        
@@ -213,7 +221,8 @@ public class ventana extends JFrame{
         button10.setBounds(0,550,261,50); //Posicionx, posiciony, tamaño,tamaño
         button11.setBounds(0,600,261,50); //Posicionx, posiciony, tamaño,tamaño
         button12.setBounds(0,650,261,50); //Posicionx, posiciony, tamaño,tamaño
-        buttonSALIR.setBounds(0,700,261,50); //Posicionx, posiciony, tamaño,tamaño        
+        button13.setBounds(0,700,261,50); //Posicionx, posiciony, tamaño,tamaño
+        buttonSALIR.setBounds(0,750,261,50); //Posicionx, posiciony, tamaño,tamaño        
         
         label1.setBounds(20,10,100,50); //Posicionx, posiciony, tamaño,tamaño        
         label2.setBounds(301,10,500,35); //Posicionx, posiciony, tamaño,tamaño        
@@ -239,6 +248,7 @@ public class ventana extends JFrame{
         panel1.add(button10);
         panel1.add(button11);
         panel1.add(button12);
+        panel1.add(button13);
         panel1.add(buttonSALIR);        
         
         panel3.add(et_imag);
@@ -498,6 +508,28 @@ public class ventana extends JFrame{
                     //String palabra = anali.publicar();
                     //areaTexto2.append("\n"+palabra);
                 }
+                if(btn1.getText() == "Crear Tabla LL1"){
+                    //areaTexto2.setText("");
+                    button1.setBackground(new Color(29,35,57));                    
+                    button2.setBackground(new Color(29,35,57));
+                    button3.setBackground(new Color(29,35,57));
+                    button4.setBackground(new Color(29,35,57));
+                    button5.setBackground(new Color(29,35,57));                                                                                                    
+                    button6.setBackground(new Color(29,35,57));
+                    button7.setBackground(new Color(29,35,57));                    
+                    button8.setBackground(new Color(29,35,57));                    
+                    button9.setBackground(new Color(29,35,57));                    
+                    button10.setBackground(new Color(29,35,57));
+                    button11.setBackground(new Color(29,35,57));
+                    button12.setBackground(new Color(29,35,57));
+                    button13.setBackground(new Color(78,98,125));
+                    buttonSALIR.setBackground(new Color(29,35,57));                                        
+                    areaTexto.append("\n"+btn1.getText());                    
+                    anali.menu(14);
+                    
+                    //String palabra = anali.publicar();
+                    //areaTexto2.append("\n"+palabra);
+                }
             }
         };
         
@@ -513,6 +545,7 @@ public class ventana extends JFrame{
         button10.addActionListener(oyente);
         button11.addActionListener(oyente);
         button12.addActionListener(oyente);
+        button13.addActionListener(oyente);
         buttonSALIR.addActionListener(oyente);        
         
         this.getContentPane().add(panel1);

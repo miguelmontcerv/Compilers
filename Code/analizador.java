@@ -62,7 +62,8 @@ public class analizador{
 				crearAFN_ER();
 				break;
 			case 14:
-				return true;
+				ttabla();
+				break;
 			default:
 				JOptionPane.showMessageDialog(null,"Ingrese una opcion válida");
 				break;
@@ -977,5 +978,123 @@ public class analizador{
 			System.out.println("Token: " + token + " y lexema: " + al.getLexema());
 		}
 	}
+    
+    private void ttabla() {
+        /*//analizador a = new analizador();                
+                ventana v1 = new ventana();
+                //v1.escribir("Holaa Mundoo");
+                v1.setVisible(true);                                      
+		/*while(!salir) {
+			salir = a.menu();
+                   
+		}              
+		//System.out.println("Finalizando ejecución");   
+        */
+        //String cadena="E->TC;C->+TC|-TC|"+SimbolosEspeciales.EPSILON+";T->FD;D->*FD|/ FD|"+SimbolosEspeciales.EPSILON+";F->(E)|n;";
+        //String cadena="E->TC;C->+TC|-TC|e;T->FD;D->*FD|/FD|e;F->(E)|n;";
+        //String cadena="E->TC;C->+TC;";
+        //Gramatica gram= new Gramatica(cadena); 
+        System.out.println("Epsilon: "+SimbolosEspeciales.EPSILON);
+        Gramatica g=new Gramatica();
+        g.imp_Gramatica();
+        
+        Tabla_LL1 t1 = new Tabla_LL1(g);
+        t1.Imp_TablaLL1();  
+        AnalisisGramatical a=new AnalisisGramatical(g);
+        a.ImpLista(t1.Filas);
+        a.ImpLista(t1.Columnas);
+        System.out.println(a.Encontrar_En_Tabla(t1, "T", "("));
+        ArrayList<String> prueba=new ArrayList<>();
+       
+       
+       
+        if(a.Cadena_Es_Aceptada(t1,"num,+,num,*,num,"))
+        {
+            System.out.println("");
+            System.out.println("Fue aceptada");
+        }else{
+            System.out.println("");
+            System.out.println("No Fue aceptada");
+        }
+        
+         /*
+        p.listaNo_Terminales.add("E");
+        p.listaNo_Terminales.add("T");
+        p.listaNo_Terminales.add("G");
+        p.listaNo_Terminales.add("N");
+
+        p.listaTerminales.add("+");
+        p.listaTerminales.add("-");*/
+        
+        
+        
+        /*ArrayList<String> Lista_First =p.First(gram.Reglas,"D");
+        System.out.println("");
+        System.out.print("First={");
+                
+        for(int i=0;i<Lista_First.size();i++){
+            if(i==0){
+                System.out.print(Lista_First.get(i));
+            }else{
+                System.out.print(", "+Lista_First.get(i));
+            }
+            
+        }
+        System.out.print("}");
+        
+        System.out.println("");
+        ArrayList<String> Lista_Follow =p.Follow(gram.Reglas,"F");
+        System.out.println("");
+        
+        System.out.print("Follow={");
+                
+        for(int i=0;i<Lista_Follow.size();i++){
+            if(i==0){
+                System.out.print(Lista_Follow.get(i));
+            }else{
+                System.out.print(", "+Lista_Follow.get(i));
+            }
+            
+        }
+        System.out.print("}");
+        
+       
+        String cadena="E->TC;C->+TC|-TC|"+SimbolosEspeciales.EPSILON+";T->FD;D->*FD|/ FD|"+SimbolosEspeciales.EPSILON+";F->(E)|n;";
+        //String cadena="E->TC;C->+TC|-TC|e;T->FD;D->*FD|/FD|e;F->(E)|n;";
+        //String cadena="E->TC;C->+TC;";
+        Gramatica gram= new Gramatica(cadena);  
+       
+        gram.imp_Gramatica();
+        //ImpLista(gram.listaNo_Terminales);
+        //ImpLista(gram.listaTerminales);
+        System.out.println("");
+      
+        
+        Tabla_LL1 t1 = new Tabla_LL1(gram);
+        t1.Imp_TablaLL1();  
+        AnalisisGramatical a=new AnalisisGramatical(gram);
+        a.ImpLista(t1.Filas);
+        a.ImpLista(t1.Columnas);
+        System.out.println(a.Encontrar_En_Tabla(t1, "T", "("));
+        ArrayList<String> prueba=new ArrayList<>();
+        prueba.add("a");
+        prueba.add("b");
+        prueba.add("c");
+        prueba.add("d");
+        
+        a.ImpLista(prueba=a.Pila_pop(prueba));
+        
+        prueba.add("e");
+       
+       
+        if(a.Cadena_Es_Aceptada(t1,"n+n*n"))
+        {
+            System.out.println("");
+            System.out.println("Fue aceptada");
+        }else{
+            System.out.println("");
+            System.out.println("No Fue aceptada");
+        }*/
+    }    
 }
 
