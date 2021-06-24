@@ -1,11 +1,13 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
-
-public class AnalisisGramatical {
+public class AnalisisGramatical implements Serializable{
     Gramatica gram;
     
-    AnalisisGramatical(Gramatica g){
+    public AnalisisGramatical(Gramatica g){
         gram=g;
     }
     
@@ -287,7 +289,7 @@ public class AnalisisGramatical {
     public boolean Cadena_Es_Aceptada(Tabla_LL1 t1,String cadena){
         boolean No_Aceptada=true;
         String Accion="";
-        ArrayList<String> Pila=new ArrayList<>();
+        ArrayList<String> Pila=new ArrayList<String>();
         cadena=cadena.concat("$");
         Pila.add("$");
         Pila.add(t1.Filas.get(0)); 

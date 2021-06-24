@@ -1,21 +1,29 @@
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import javax.swing.JOptionPane;
 
-
-public class Tabla_LL1 {
+public class Tabla_LL1 implements Serializable {
     String[][] Tabla;
     ArrayList<String> Filas;
     ArrayList<String> Columnas;
     
-    Tabla_LL1(Gramatica g){
-        AnalisisGramatical a = new AnalisisGramatical(g.Reglas);
-        Columnas = a.gram.listaTerminales;
-        System.out.println(Columnas.size());
-        Filas = a.gram.listaNo_Terminales;
-        System.out.println(" --"+Filas.size());
-        ArrayList<String> Aux_cols = a.gram.listaTerminales;
-        ArrayList<String> Aux_filas =  a.gram.listaNo_Terminales;
-        Aux_filas=Pegar_Listas(Aux_filas,Aux_cols); 
+    String palabras_panel = "";    
+    
+    public Tabla_LL1(Gramatica g){
+        AnalisisGramatical a = new AnalisisGramatical(g);
+        Columnas=g.listaTerminales;
+        Columnas.add("$");
+       // Columnas = a.gram.listaTerminales;
+        Filas=Pegar_Listas(g.listaNo_Terminales,g.listaTerminales); 
+        //Filas = a.gram.listaNo_Terminales;
+       //ArrayList<String> Aux_cols = a.gram.listaTerminales;
+        //ArrayList<String> Aux_filas =  a.gram.listaNo_Terminales;
+        ArrayList<String> Aux_cols = g.listaTerminales;
+        
+        ArrayList<String> Aux_filas =  Pegar_Listas(g.listaNo_Terminales,g.listaTerminales);
+        //Aux_filas=Pegar_Listas(Aux_filas,Aux_cols); 
         //ImpLista(Aux_cols);
         //ImpLista(Aux_filas);
         
@@ -89,39 +97,51 @@ public class Tabla_LL1 {
      
         
     }
+    
     public void Imp_Tabla(String[][] T){
-        
+        String s = "";
         for(int i=0;i<T.length;i++){
             for(int j=0;j<T[0].length;j++){
-                System.out.print(T[i][j]+"\t");
+                //System.out.print(T[i][j]+"\t");
+                s = s + T[i][j]+"\t";
             }
-            System.out.println("");
+            //System.out.println("");
+            s+="\n";
         }
+      palabras_panel = palabras_panel + s;
+      //JOptionPane.showMessageDialog(null,s);
     }
     
     public void Imp_TablaLL1(){
+        String s = "";
+        s+="\t";
         System.out.print("\t");
         for(int i=0;i<Columnas.size();i++){
-            System.out.print(Columnas.get(i)+"\t\t");
+            //System.out.print(Columnas.get(i)+"\t\t");
+            s = s +Columnas.get(i)+"\t\t";
         }
         System.out.println("");
+        s+="\n";
         for(int i=0;i<Filas.size();i++){
-            System.out.print(Filas.get(i)+"\t");
+            //System.out.print(Filas.get(i)+"\t");
+            s = s + Filas.get(i)+"\t";
             for(int j=0;j<Columnas.size();j++){
                 if(Tabla[i][j]==null){
-                    System.out.print("%\t\t");
+                    //System.out.print("%\t\t");
+                    s = s + "%\t\t";
                 }else{
                     if(Tabla[i][j].contains("EPSILON")||Tabla[i][j].length()>7){
-                        System.out.print(Tabla[i][j]+"\t");
-                    }else{System.out.print(Tabla[i][j]+"\t\t");}
-                    
-                    
+                       //System.out.print(Tabla[i][j]+"\t");
+                        s = s + Tabla[i][j]+"\t";
+                    }else{System.out.print(Tabla[i][j]+"\t\t"); s = s + Tabla[i][j]+"\t\t";}                                        
                 }
                 
             }
-            System.out.println("");
-           
+            //System.out.println("");
+            s+="\n";           
         }
+        palabras_panel = palabras_panel + s;
+        //JOptionPane.showMessageDialog(null,s);
     }
     
     private int Indice_Columna(ArrayList<String> columnas,String Simbolo){
@@ -197,7 +217,20 @@ public class Tabla_LL1 {
         System.out.print("}");
     }
     
+    public ArrayList<String> getTerminals() {
+    	return Columnas;
+    }
     
+    public ArrayList<String> getRows(){
+    	return Filas;
+    }
     
+    public String[][] getContent(){
+    	return Tabla;
+    }
+
+    public String publicar(){
+            return palabras_panel;
+        }    
     
 }

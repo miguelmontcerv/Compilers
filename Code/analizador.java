@@ -17,6 +17,7 @@ public class analizador{
 	private Map<String, AFN> listaAutomatas = new HashMap<String, AFN>();
 	private Map<String, AFN> especiales = new HashMap<String, AFN>();
 	private Map<String, String[][]> afds = new HashMap<String, String[][]>();   
+        private AnalisisSintacticoLL1 asLL1;
         String palabras_panel = "";
 	
 	public boolean menu(int opcion) {
@@ -62,7 +63,13 @@ public class analizador{
 				crearAFN_ER();
 				break;
 			case 14:
-				ttabla();
+				crearLL1();
+				break;
+                        case 15:
+				impLL1();
+				break;
+                        case 16:
+				lexLL1();
 				break;
 			default:
 				JOptionPane.showMessageDialog(null,"Ingrese una opcion válida");
@@ -979,122 +986,294 @@ public class analizador{
 		}
 	}
     
-    private void ttabla() {
-        /*//analizador a = new analizador();                
-                ventana v1 = new ventana();
-                //v1.escribir("Holaa Mundoo");
-                v1.setVisible(true);                                      
-		/*while(!salir) {
-			salir = a.menu();
-                   
-		}              
-		//System.out.println("Finalizando ejecución");   
-        */
-        //String cadena="E->TC;C->+TC|-TC|"+SimbolosEspeciales.EPSILON+";T->FD;D->*FD|/ FD|"+SimbolosEspeciales.EPSILON+";F->(E)|n;";
-        //String cadena="E->TC;C->+TC|-TC|e;T->FD;D->*FD|/FD|e;F->(E)|n;";
-        //String cadena="E->TC;C->+TC;";
-        //Gramatica gram= new Gramatica(cadena); 
-        System.out.println("Epsilon: "+SimbolosEspeciales.EPSILON);
+    private void crearLL1() {
+        //System.out.println("Epsilon: "+SimbolosEspeciales.EPSILON);
         Gramatica g=new Gramatica();
         g.imp_Gramatica();
+        palabras_panel =  palabras_panel + g.publicar();
         
         Tabla_LL1 t1 = new Tabla_LL1(g);
-        t1.Imp_TablaLL1();  
-        AnalisisGramatical a=new AnalisisGramatical(g);
-        a.ImpLista(t1.Filas);
-        a.ImpLista(t1.Columnas);
-        System.out.println(a.Encontrar_En_Tabla(t1, "T", "("));
-        ArrayList<String> prueba=new ArrayList<>();
-       
-       
-       
-        if(a.Cadena_Es_Aceptada(t1,"num,+,num,*,num,"))
-        {
-            System.out.println("");
-            System.out.println("Fue aceptada");
-        }else{
-            System.out.println("");
-            System.out.println("No Fue aceptada");
-        }
         
-         /*
-        p.listaNo_Terminales.add("E");
-        p.listaNo_Terminales.add("T");
-        p.listaNo_Terminales.add("G");
-        p.listaNo_Terminales.add("N");
-
-        p.listaTerminales.add("+");
-        p.listaTerminales.add("-");*/
+        /////
+        FileOutputStream fos;
         
+        //System.out.println("Ingrese el nombre del archivo .txt");
+        String name = JOptionPane.showInputDialog("Ingrese el nombre del archivo .txt");
+		try {
+			fos = new FileOutputStream(name.concat(".txt"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			
+			oos.writeObject(t1);
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        palabras_panel = palabras_panel + "\n\n"+ t1.publicar();
+	}
+	
+	private void impLL1() {
+		//System.out.println("Ingrese el nombre del archivo con data LL1 .txt a importar");
+		String name = JOptionPane.showInputDialog("Ingrese el nombre del archivo con data LL1 .txt a importar");
+		Tabla_LL1 ll1 = searchLL1(name);		
+		ll1.Imp_TablaLL1();				
+	}    
         
+        private void lexLL1() {
+		//System.out.println("Ingrese el nombre del archivo con data LL1 .txt a importar");
+		String name = JOptionPane.showInputDialog("Ingrese el nombre del archivo con data LL1 .txt a importar");
+		//String name = "pruebaLL1";
+		Tabla_LL1 ll1 = searchLL1(name);
+		
+		//System.out.println("Ingrese la cadena con la que se probará la tabla ll1");
+		name = JOptionPane.showInputDialog("Ingrese la cadena con la que se probará la tabla ll1");
+		
+		Stack<String> terminals = new Stack<String>();
+		for(String s: ll1.getTerminals()) {
+			terminals.push(s);
+		}
+		
+		asLL1 = new AnalisisSintacticoLL1(ll1, name);
+		lexGramLL1(terminals);
+		
+		/* Codigo analizador sintactico LL1 */
+		asLL1.startLexic();
+		palabras_panel = asLL1.publicar();
+	}
+	
+	private Tabla_LL1 searchLL1(String name) {		
+		//System.out.println(name.concat(".txt"));
+                JOptionPane.showMessageDialog(null,name.concat(".txt"));
+		Tabla_LL1 ll1;
+		try {
+			FileInputStream fis = new FileInputStream(name.concat(".txt"));
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			ll1 = (Tabla_LL1)ois.readObject();
+			
+			ois.close();
+		} catch (Exception e) {
+			//System.out.println("Error al encontrar el archivo, intente con otro nombre");
+                        JOptionPane.showMessageDialog(null,"Error al encontrar el archivo, intente con otro nombre");
+			return null;
+		}
+		return ll1;
+	}
         
-        /*ArrayList<String> Lista_First =p.First(gram.Reglas,"D");
-        System.out.println("");
-        System.out.print("First={");
-                
-        for(int i=0;i<Lista_First.size();i++){
-            if(i==0){
-                System.out.print(Lista_First.get(i));
-            }else{
-                System.out.print(", "+Lista_First.get(i));
-            }
-            
-        }
-        System.out.print("}");
+        private void lexGramLL1(Stack<String> sigma) {
+		Map<String, AFN> toLex = new HashMap<String, AFN>();
+		Map<String, String[][]> automatas = new HashMap<String, String[][]>();
+		
+		String nombreDelArchivo="er_afd";
+		try {
+			FileInputStream fis = new FileInputStream(nombreDelArchivo.concat(".txt"));
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			automatas = (Map<String, String[][]>)ois.readObject();
+			ois.close();
+		} catch (Exception e) {
+			//System.out.println("Error al cargar el archivo");
+			JOptionPane.showMessageDialog(null,"Error al cargar el archivo");
+		}
+		
+		String automata = "aafd";
+		
+		AFN f;
+		ER_AFN ea;
+		String erForm;
+		String norm;
+		while(!sigma.isEmpty()) {
+			
+			f = new AFN();
+			norm = sigma.pop();
+			erForm = interleave(norm, 1, "&");
+			if(erForm.contains("+")) erForm=erForm.replaceAll("\\+", "\\\\+");
+			if(erForm.contains("*")) erForm=erForm.replaceAll("\\*", "\\\\*");
+			if(erForm.contains("(")) erForm=erForm.replaceAll("\\(", "\\\\(");
+			if(erForm.contains(")")) erForm=erForm.replaceAll("\\)", "\\\\)");
+			if(erForm.contains("-")) erForm=erForm.replaceAll("\\-", "\\\\-");
+			
+			ea = new ER_AFN(automatas.get(automata), erForm);
+			if(ea.E(f)) {
+				if(ea.getLastToken()==SimbolosEspeciales.FIN) {
+					toLex.put(norm, f);
+				}else {
+					//System.out.println("Error al crear AFN");
+					JOptionPane.showMessageDialog(null,"Error al crear AFN");
+				}
+			}else {
+				//System.out.println("Error al crear AFN");
+				JOptionPane.showMessageDialog(null,"Error al crear AFN");
+			}
+		}
+		
+		createSpecialLL1(toLex);
+	}
+	
+	private String interleave(String s, int interval, String separator)
+	{
+	    StringBuilder sb = new StringBuilder(s);
+	    for (int pos = (s.length()-1) / interval; pos > 0; pos--)
+	    {
+	        sb.insert(pos * interval, separator);
+	    }
+	    return sb.toString();
+	}
         
-        System.out.println("");
-        ArrayList<String> Lista_Follow =p.Follow(gram.Reglas,"F");
-        System.out.println("");
+        private void createSpecialLL1(Map<String, AFN> toLex) {
+		int tokenRing;
+		boolean dejarDePedirToken;
+		Map<Integer, AFN> aUnir = new HashMap<Integer, AFN>(); 
+		
+		if(toLex.size()<2) {
+			//System.out.println("No se cuenta con los suficientes AFN's para realizar esta operación");
+			JOptionPane.showMessageDialog(null,"No se cuenta con los suficientes AFN's para realizar esta operación");
+			return;
+		}
+		
+		for(String s: toLex.keySet()) {
+			dejarDePedirToken = false;
+			while(!dejarDePedirToken) {
+				//System.out.println("Ingrese el Token asociado a \"".concat(s).concat("\""));
+				tokenRing = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Token asociado a \""+s+"\""));
+				if(aUnir.keySet().contains(tokenRing)) {
+					//System.out.println("Este token ya ha sido asignado");
+					JOptionPane.showMessageDialog(null,"Este token ya ha sido asignado");
+				}else {
+					dejarDePedirToken = true;
+					aUnir.put(tokenRing, toLex.get(s));
+				}
+			}
+		}
+		
+		for(Integer i: aUnir.keySet()) {
+			for(Estado e: aUnir.get(i).edosAcept) {
+				e.setToken(i);
+			}
+		}
+		
+		AFN especial = new AFN();
+		Estado eInicial = new Estado();
+		Transicion t;
+		for(Integer i: aUnir.keySet()) {
+			t = new Transicion(SimbolosEspeciales.EPSILON, aUnir.get(i).edoIni);
+			eInicial.setTransicion(t);
+			especial.alfabeto.addAll(aUnir.get(i).alfabeto);
+			especial.edosAcept.addAll(aUnir.get(i).edosAcept);
+			especial.edosAFN.addAll(aUnir.get(i).edosAFN);
+		}
+		especial.edoIni=eInicial;
+		especial.edosAFN.add(eInicial);
+		
+		genAFDLL1(especial);
+	}
+	
+	private void genAFDLL1(AFN especial) {
+		
+		// Comienza proceso de AFD
+		int estadoActual = 0;
+		int estadoDelAFD;
+		AFN convertir = especial;
+		Map<Integer, HashSet<Estado>> estadosAFD = new HashMap<Integer, HashSet<Estado>>();		//Almacena los estados del AFD con sus respectivos estados del AFN antiguo
+		List<Integer> aux = new ArrayList<Integer>();		//Sirve para realizar el bucle hasta que no se encuentren mas estados del AFD
+		HashSet<Estado> resultadoDeMoverA;	//Se usa para guardar los estados a los que se aplicara cerradura
+		HashSet<Estado> estadosResultadoDeCerradura;		//Servirá para guardar las cerraduras epsilon de los estados a aplicar la cerradura
+		Map<HashSet<Estado>, Integer> estadosAFDInverso = new HashMap<HashSet<Estado>, Integer>();
+		
+		/*for(estado e: convertir.cerraduraEpsilon(convertir.getEdoInicial())) {
+			System.out.printf("%d ",e.getIdEstado());
+		}*/
+		//System.out.println();
+		
+		// Primero se aplica cerradura al estado inicial y se guarda en estadosAFD
+		estadosAFD.put(estadoActual, convertir.cerraduraEpsilon(convertir.getEdoInicial()));
+		
+		// La pila se inicializa en es estado 0 del nuevo automata
+		aux.add(estadoActual);
+		
+		// Con la pila creada nuevamente se anexaran estados hasta terminar de analizar cada estado nuevo que vaya apareciendo
+		while(!aux.isEmpty()) {
+			// Obtengo el primer estado y lo remuevo
+			estadoDelAFD = aux.get(0);
+			aux.remove(0);
+			
+			// Para todo el alfabeto realizo el procedimiento CerraduraEpsilon(MoverA(listaDeEstados, caracter))
+			for(Character c: convertir.alfabeto) {
+				// En esta lista se almacenan los estados a los que se llega con un simbolo en especial epsilon
+				estadosResultadoDeCerradura = new HashSet<Estado>();
+				
+				// En resultado de mover se guardan los estados a los que se llega con un caracter en especifico 
+				resultadoDeMoverA = convertir.moverA(estadosAFD.get(estadoDelAFD), c);
+				
+				// Aplico la cerradura epsilon a cada estado que me dio de resultado la operacion MoverA
+				for(Estado e: resultadoDeMoverA) {
+					estadosResultadoDeCerradura.addAll(convertir.cerraduraEpsilon(e));
+				}
+				
+				// Si no es vacio mi conjunto analizado lo analizo
+				if(!estadosResultadoDeCerradura.isEmpty()) {
+					
+					// Si no se encuentra el conjunto de estados en mi map lo agrego con su respectivo id de estado así como a la pila a analizar
+					if(!estadosAFD.containsValue(estadosResultadoDeCerradura)) {
+						estadoActual++;
+						estadosAFD.put(estadoActual, estadosResultadoDeCerradura);
+						estadosAFDInverso.put(estadosResultadoDeCerradura, estadoActual);
+						aux.add(estadoActual);
+					}
+				}
+			}
+		}
+		
+		int token;
+		String [][]matriz = new String[estadosAFD.size()][256];
+		
+		for(int fila=0; fila<estadosAFD.size(); fila++) {
+			for(int columna=0; columna<256; columna++) {
+				if(columna<255) {
+					estadosResultadoDeCerradura = new HashSet<Estado>();
+					resultadoDeMoverA = convertir.moverA(estadosAFD.get(fila) ,(char)columna);
+					for(Estado e: resultadoDeMoverA) {
+						estadosResultadoDeCerradura.addAll(convertir.cerraduraEpsilon(e));
+					}
+					if(estadosAFD.containsValue(estadosResultadoDeCerradura)) {
+						matriz[fila][columna] = estadosAFDInverso.get(estadosResultadoDeCerradura)+"";
+					}else {
+						/*Se cambio la forma de guardar el AFD, ahora es -1 si no tiene transicion y existe en el alfabeto y -2 cuando no tiene transicion y no existe en el alfabeto*/
+						if(convertir.alfabeto.contains((char)columna)){
+							matriz[fila][columna] = "-1";
+						}else {
+							matriz[fila][columna] = "-2";
+						}
+						/* Fin del cambio */
+					}
+				}else {
+					token=-1;
+					for(Estado e: estadosAFD.get(fila)) {
+						if(e.getToken()!=-1) {
+							token = e.getToken();
+						}
+					}
+					matriz[fila][columna]=token+"";
+				}
+			}
+		}
+		
+		for(int fila=0; fila<estadosAFD.size(); fila++) {
+			for(int columna=0; columna<256; columna++) {
+				if(columna<255) {
+					if(matriz[fila][columna]!="-2") {
+						//System.out.printf("\t(%c)%s", (char)columna, matriz[fila][columna]);
+                                                palabras_panel = palabras_panel + "\t("+(char)columna+")"+matriz[fila][columna]+"\n";                                               
+					}
+				}else {
+                                       palabras_panel = palabras_panel + "\tToken:"+matriz[fila][columna];
+					System.out.printf("\tToken:%s", matriz[fila][columna]);
+				}
+			}	
+			palabras_panel = palabras_panel + "\n";
+		}
+		
+		asLL1.setLexicAnalyzer(matriz);
+	}
         
-        System.out.print("Follow={");
-                
-        for(int i=0;i<Lista_Follow.size();i++){
-            if(i==0){
-                System.out.print(Lista_Follow.get(i));
-            }else{
-                System.out.print(", "+Lista_Follow.get(i));
-            }
-            
-        }
-        System.out.print("}");
-        
-       
-        String cadena="E->TC;C->+TC|-TC|"+SimbolosEspeciales.EPSILON+";T->FD;D->*FD|/ FD|"+SimbolosEspeciales.EPSILON+";F->(E)|n;";
-        //String cadena="E->TC;C->+TC|-TC|e;T->FD;D->*FD|/FD|e;F->(E)|n;";
-        //String cadena="E->TC;C->+TC;";
-        Gramatica gram= new Gramatica(cadena);  
-       
-        gram.imp_Gramatica();
-        //ImpLista(gram.listaNo_Terminales);
-        //ImpLista(gram.listaTerminales);
-        System.out.println("");
-      
-        
-        Tabla_LL1 t1 = new Tabla_LL1(gram);
-        t1.Imp_TablaLL1();  
-        AnalisisGramatical a=new AnalisisGramatical(gram);
-        a.ImpLista(t1.Filas);
-        a.ImpLista(t1.Columnas);
-        System.out.println(a.Encontrar_En_Tabla(t1, "T", "("));
-        ArrayList<String> prueba=new ArrayList<>();
-        prueba.add("a");
-        prueba.add("b");
-        prueba.add("c");
-        prueba.add("d");
-        
-        a.ImpLista(prueba=a.Pila_pop(prueba));
-        
-        prueba.add("e");
-       
-       
-        if(a.Cadena_Es_Aceptada(t1,"n+n*n"))
-        {
-            System.out.println("");
-            System.out.println("Fue aceptada");
-        }else{
-            System.out.println("");
-            System.out.println("No Fue aceptada");
-        }*/
-    }    
 }
 

@@ -1,15 +1,18 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
-public class Gramatica {
+public class Gramatica implements Serializable{
 
     
     List<List<String>> Reglas= new ArrayList<>();
     String primer_no_terminal;
     ArrayList<String> listaNo_Terminales;
     ArrayList<String> listaTerminales;
+
+    String palabras_panel = "";
     
     public Gramatica(List<List<String>> r,ArrayList<String> LNT,ArrayList<String> LT){
         listaNo_Terminales = LNT;
@@ -47,38 +50,62 @@ public class Gramatica {
         listaNo_Terminales=nter;
         primer_no_terminal= Prueba.get(0).get(0);
         /**/
-        
+                
         Scanner sc = new Scanner(System.in);
         /*System.out.println("Ingrese separado por comas los simbolos Terminales de la gramatica"); 
         System.out.println("Para terminar de poner valores escriba una ','  al final");
         System.out.println("EJ: +,-,num,(,[, ");
         System.out.println("Terminales: ");*/
-        String Terminales = JOptionPane.showInputDialog("Ingrese separado por comas los simbolos Terminales de la gramatica\nPara terminar de poner valores escriba una ','  al final\nEJ: +,-,num,(,[,\nTerminales: ");
+      
+        String Terminales = JOptionPane.showInputDialog("Ingrese separado por comas los simbolos Terminales de la gramatica"
+                + "\nPara terminar de poner valores escriba una ','  al final"
+                + "\nEJ: +,-,num,(,[, "
+                + "\nTerminales: ");
+        
+        if(!Terminales.endsWith(",")) {
+        	System.out.println("No pusistes una coma, ya la puse cabron...");
+        	Terminales = Terminales.concat(",");
+        	System.out.println(Terminales);
+        }
         //System.out.println("");
         ArrayList<String> Term_Aux=Generar_lista_con_Cadena(Terminales);
         //System.out.println(Term_Aux);
-        //JOptionPane.showMessageDialog(null,Term_Aux);
+        JOptionPane.showMessageDialog(null,Term_Aux);
         /*System.out.println("Ingrese separado por comas los simbolos No-Terminales de la gramatica"); 
         System.out.println("Coloque por favor el No Terminal inicial al principio del listado");
         System.out.println("Para terminar de poner valores escriba una ','  al final");
         System.out.println("EJ: E,C,D,Ep,S, ");
         System.out.println("No_Terminales: ");*/
-        String No_Terminales = JOptionPane.showInputDialog("Ingrese separado por comas los simbolos No-Terminales de la gramatican\nColoque por favor el No Terminal inicial al principio del listado\nPara terminar de poner valores escriba una ',' al final\nEJ: E,C,D,Ep,S\nNo_Terminales:");
+        
+        String No_Terminales = JOptionPane.showInputDialog("Ingrese separado por comas los simbolos No-Terminales de la gramatica"
+                + "\nColoque por favor el No Terminal inicial al principio del listado"
+                + "\nPara terminar de poner valores escriba una ','  al final"
+                + "\nEJ: E,C,D,Ep,S,"
+                + "\nNo_Terminales:");
+
+        if(!No_Terminales.endsWith(",")) {
+        	System.out.println("No pusistes una coma, ya la puse cabron...");
+        	No_Terminales = No_Terminales.concat(",");
+        	System.out.println(No_Terminales);
+        }
         //System.out.println("");
         ArrayList<String> No_Term_Aux=Generar_lista_con_Cadena(No_Terminales);
         //System.out.println(No_Term_Aux);
-        //JOptionPane.showMessageDialog(null,No_Term_Aux);
+        JOptionPane.showMessageDialog(null,No_Term_Aux);
+        
         String Aux_Regla;
         ArrayList<String> Array_Reglas = new ArrayList<>();
-        String s = "";
         for(int i=0;i<No_Term_Aux.size();i++){
             /*System.out.println("Inglrese lo que genera el no terminal: "+No_Term_Aux.get(i));
             System.out.println("Separar los simbolos por comas, las reglas con '|' y terminar la cadena con ';' ");
             System.out.println("EJ: 'E->+TC|-TC' se pone como '+,T,C|-,T,C;'");*/
-            Aux_Regla = JOptionPane.showInputDialog("Ingrese lo que genera el no terminal: "+No_Term_Aux.get(i)+"\nSeparar los simbolos por comas, las reglas con '|' y terminar la cadena con ';' "+"\nEJ: 'E->+TC|-TC' se pone como '+,T,C|-,T,C;'");
+            
+            Aux_Regla=JOptionPane.showInputDialog("Inglrese lo que genera el no terminal: "+No_Term_Aux.get(i)
+                    +"\nSeparar los simbolos por comas, las reglas con '|' y terminar la cadena con ';' "
+                    + "EJ: 'E->+TC|-TC' se pone como '+,T,C|-,T,C;'");
             Array_Reglas.add(Aux_Regla);
-            JOptionPane.showMessageDialog(null,"Se capturo correctamente:)");
             //System.out.println("Se capturo correctamente");
+            JOptionPane.showMessageDialog(null,"Se capturo correctamente");
         }
         //System.out.println("La regla mas larga fue: "+Regla_mas_larga(Array_Reglas, Term_Aux, No_Term_Aux));
         JOptionPane.showMessageDialog(null,"La regla mas larga fue: "+Regla_mas_larga(Array_Reglas, Term_Aux, No_Term_Aux));
@@ -86,7 +113,9 @@ public class Gramatica {
         
         Reglas=Aux_Reglas;
         listaTerminales=Term_Aux;
-        listaNo_Terminales=No_Term_Aux;
+        listaNo_Terminales=No_Term_Aux;        
+        
+        /**/        
     }
     
     
@@ -124,7 +153,10 @@ public class Gramatica {
                     
                     agregar=""+auxiliar.charAt(j);
                     Reglas.get(j+1).add(agregar);
-                    //System.out.print(agregar+"  ");/**/                                                                    
+                    //System.out.print(agregar+"  ");/**/
+                    
+                    
+                            
                 }
                 //System.out.println(Regla_mas_larga(cadena));
                 while(j<Regla_mas_larga(cadena)){
@@ -133,7 +165,9 @@ public class Gramatica {
                     j++;
                     //System.out.print("%"+"  ");/**/
                 }
-                /*System.out.println("");/**/                              
+                /*System.out.println("");/**/
+              
+                
                 auxiliar="";
             }
             if((cadena.charAt(i)+"").contentEquals(">")){
@@ -151,8 +185,11 @@ public class Gramatica {
                     //System.out.println(j+1);
                     
                     Reglas.get(j+1).add(agregar);
-                    //System.out.print(agregar+"  ");/**/                                        
-                }               
+                    //System.out.print(agregar+"  ");/**/
+                    
+                    
+                }
+               
                 while(j<Regla_mas_larga(cadena)){
                     
                     Reglas.get(j+1).add("%");
@@ -179,10 +216,12 @@ public class Gramatica {
             if(!AuxiliarNT.contains(Reglas.get(0).get(i))){
                 AuxiliarNT.add(Reglas.get(0).get(i));
                 //System.out.println("Añadido a la lista de NO terminales: "+Lista_Reglas.get(0).get(i));
-            }            
+            }
+            
         }
         
-        listaNo_Terminales=AuxiliarNT;        
+        listaNo_Terminales=AuxiliarNT;
+        
        
         for(int i=0;i<Reglas.get(0).size();i++){
             for(int k=1;k<Reglas.size();k++){
@@ -197,7 +236,9 @@ public class Gramatica {
         }
         AuxiliarT.add("$");
         listaTerminales=AuxiliarT;
-                        
+        
+        
+        
     }
     
     private int Regla_mas_larga(String cadena){//"E->+AC|-AC|e;A->/BC|CD|DAAAs;";
@@ -224,6 +265,7 @@ public class Gramatica {
                 } 
             }
             
+
         }
         return longitud;
     }    
@@ -235,29 +277,29 @@ public class Gramatica {
         
         for(int i=0;i<Array_Reglas.size();i++){
             for(int j=0;j<Array_Reglas.get(i).length();j++){
-                System.out.println("-"+Array_Reglas.get(i).charAt(j));
+                //System.out.println("-"+Array_Reglas.get(i).charAt(j));
                 if(!(Array_Reglas.get(i).charAt(j)+"").contentEquals(",")){
                     
                     if((Array_Reglas.get(i).charAt(j)+"").contentEquals(";")  || (Array_Reglas.get(i).charAt(j)+"").contentEquals("|")){
                         if((Array_Reglas.get(i).charAt(j)+"").contentEquals("|")){
-                            System.out.println("Se acumulo por: "+Array_Reglas.get(i).charAt(j));
+                            //System.out.println("Se acumulo por: "+Array_Reglas.get(i).charAt(j));
                             Acumulado++;
                         }
                         if(Acumulado>mayor){
                             
                             mayor=Acumulado;
-                            System.out.println("Mayor: "+mayor);
+                            //System.out.println("Mayor: "+mayor);
                             
                         }
                         Acumulado=0;
                     }
                 }else{
-                    System.out.println("Se acumulo por: "+Array_Reglas.get(i).charAt(j));
+                    //System.out.println("Se acumulo por: "+Array_Reglas.get(i).charAt(j));
                     Acumulado++;
                 }
             }
         }
-        System.out.println("EL MAYOR FUE: "+mayor);
+        //System.out.println("EL MAYOR FUE: "+mayor);
         return mayor;
     }
 
@@ -275,30 +317,28 @@ public class Gramatica {
     }
     
     public void imp_Gramatica(){
+        String s = "";
         List<List<String>> Gramatica = this.Reglas;
-        String aux = "";
         for(int i=0;i<Gramatica.get(0).size();i++){
        
             for(int j=0;j<Gramatica.size();j++){
                 if(j==0){
                     //System.out.print(Gramatica.get(j).get(i)+"->\t");
-                    aux = aux + Gramatica.get(j).get(i)+"->\t\n";
+                    s = s + Gramatica.get(j).get(i)+"->\t";
                 }else{
                     if(Gramatica.get(j).get(i).length()<6){
                         //System.out.print(Gramatica.get(j).get(i)+"\t\t");
-                        aux = aux + Gramatica.get(j).get(i)+"->\t\t\n";
+                        s = s + Gramatica.get(j).get(i)+"\t\t";
                     }else{
                         //System.out.print(Gramatica.get(j).get(i)+"\t");
-                        aux = aux + Gramatica.get(j).get(i)+"->\t\n";
-                    }
-                        
-                    
+                        s = s + Gramatica.get(j).get(i)+"\t";
+                    }                                            
                     
                 }
             }
-            //System.out.println("");
-            JOptionPane.showMessageDialog(null,aux);
+            s+="\n";
         }
+     palabras_panel = palabras_panel +s;
     }
     
     
@@ -332,14 +372,19 @@ public class Gramatica {
         
         int k=0;
         
-        JOptionPane.showMessageDialog(null,"Regla mas larga: "+ Regla_mas_larga(Array_Reglas,Terminales ,No_Terminales));
         //System.out.println("Regla mas larga: "+ Regla_mas_larga(Array_Reglas,Terminales ,No_Terminales));
+        //JOptionPane.showMessageDialog(null,"Regla mas larga: "+ Regla_mas_larga(Array_Reglas,Terminales ,No_Terminales));
         for(int i=0;i<Regla_mas_larga(Array_Reglas,Terminales ,No_Terminales)+1;i++){
             Auxiliar.add(new ArrayList());
-        }        
+        }
+        
         
        // System.out.println(""+Auxiliar.get(0).size());
        // System.out.println(""+Auxiliar.size());
+        
+        
+        
+        
         
         for(int i=0;i<Array_Reglas.size();i++){
             No_Terminal_Actual=No_Terminales.get(i);
@@ -445,4 +490,8 @@ public class Gramatica {
         
         return Auxiliar;
     }
+
+    public String publicar(){
+            return palabras_panel;
+        }
 }

@@ -22,7 +22,7 @@ public class ER_AFN {
 		if(token == 10) {	// OR
 			if(T(f2)) {
 				f.unirAFN(f2);
-				if(E(f))
+				if(Ep(f))
 					return true;
 			}
 			return false;

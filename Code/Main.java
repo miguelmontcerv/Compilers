@@ -4,8 +4,7 @@ public class Main {
 	
 	public static void main(String args[]) {
 		//analizador a = new analizador();                
-                ventana v1 = new ventana();
-                //v1.escribir("Holaa Mundoo");
+                ventana v1 = new ventana();                
                 v1.setVisible(true);                                      
 		/*while(!salir) {
 			salir = a.menu();

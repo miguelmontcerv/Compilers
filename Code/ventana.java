@@ -24,7 +24,7 @@ public class ventana extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setTitle("Analizador Lexico");
+        setTitle("PROYECTO FINAL");
         iniciarComponentes();        
     }
     
@@ -135,6 +135,22 @@ public class ventana extends JFrame{
         button13.setBackground(new Color(29,35,57));
         button13.setForeground(Color.white);
         
+        JButton button14 = new JButton("Implementar Tabla LL1");
+        button14.setFocusPainted(false);
+        button14.setMargin(new Insets(0, 0, 0, 0));        
+        button14.setBorderPainted(false);
+        button14.setOpaque(true);
+        button14.setBackground(new Color(29,35,57));
+        button14.setForeground(Color.white);
+        
+        JButton button15 = new JButton("Analizar sintacticamente una cadena en LL1");
+        button15.setFocusPainted(false);
+        button15.setMargin(new Insets(0, 0, 0, 0));        
+        button15.setBorderPainted(false);
+        button15.setOpaque(true);
+        button15.setBackground(new Color(29,35,57));
+        button15.setForeground(Color.white);
+        
         JButton buttonSALIR = new JButton("Salir");
         buttonSALIR.setFocusPainted(false);
         buttonSALIR.setMargin(new Insets(0, 0, 0, 0));        
@@ -146,7 +162,7 @@ public class ventana extends JFrame{
         /* --------------------------------------------------------------------------------- */
         JTextArea areaTexto = new JTextArea();
         areaTexto.setBounds(2,2,346, 968);
-        areaTexto.setText("Bienvenido al Analizador Léxico");
+        areaTexto.setText("Bienvenido al Proyecto Final");
         areaTexto.setEditable(false);
         areaTexto.setFont(new Font("Roboto",Font.PLAIN,20));
         areaTexto.setBackground(new Color(168,218,220));
@@ -183,7 +199,7 @@ public class ventana extends JFrame{
         label1.setFont(new Font("Roboto",Font.PLAIN,30));
         label1.setForeground(Color.white);
 
-        JLabel label2 = new JLabel("A N A L I Z A D O R    L É X I C O",SwingConstants.CENTER);        
+        JLabel label2 = new JLabel("P R O Y E C T O   F I N A L",SwingConstants.CENTER);        
         label2.setFont(new Font("Roboto",Font.PLAIN,30));
         label2.setForeground(Color.black);
         
@@ -222,7 +238,9 @@ public class ventana extends JFrame{
         button11.setBounds(0,600,261,50); //Posicionx, posiciony, tamaño,tamaño
         button12.setBounds(0,650,261,50); //Posicionx, posiciony, tamaño,tamaño
         button13.setBounds(0,700,261,50); //Posicionx, posiciony, tamaño,tamaño
-        buttonSALIR.setBounds(0,750,261,50); //Posicionx, posiciony, tamaño,tamaño        
+        button14.setBounds(0,750,261,50); //Posicionx, posiciony, tamaño,tamaño
+        button15.setBounds(0,800,261,50); //Posicionx, posiciony, tamaño,tamaño
+        buttonSALIR.setBounds(0,850,261,50); //Posicionx, posiciony, tamaño,tamaño        
         
         label1.setBounds(20,10,100,50); //Posicionx, posiciony, tamaño,tamaño        
         label2.setBounds(301,10,500,35); //Posicionx, posiciony, tamaño,tamaño        
@@ -249,6 +267,8 @@ public class ventana extends JFrame{
         panel1.add(button11);
         panel1.add(button12);
         panel1.add(button13);
+        panel1.add(button14);
+        panel1.add(button15);
         panel1.add(buttonSALIR);        
         
         panel3.add(et_imag);
@@ -509,7 +529,7 @@ public class ventana extends JFrame{
                     //areaTexto2.append("\n"+palabra);
                 }
                 if(btn1.getText() == "Crear Tabla LL1"){
-                    //areaTexto2.setText("");
+                    areaTexto2.setText("");
                     button1.setBackground(new Color(29,35,57));                    
                     button2.setBackground(new Color(29,35,57));
                     button3.setBackground(new Color(29,35,57));
@@ -524,11 +544,58 @@ public class ventana extends JFrame{
                     button12.setBackground(new Color(29,35,57));
                     button13.setBackground(new Color(78,98,125));
                     buttonSALIR.setBackground(new Color(29,35,57));                                        
-                    areaTexto.append("\n"+btn1.getText());                    
+                    areaTexto.append("\n"+btn1.getText());                                       
                     anali.menu(14);
                     
-                    //String palabra = anali.publicar();
-                    //areaTexto2.append("\n"+palabra);
+                    String palabra = anali.publicar();
+                    areaTexto2.append("\n"+palabra);
+                }
+                if(btn1.getText() == "Implementar Tabla LL1"){
+                    areaTexto2.setText("");
+                    button1.setBackground(new Color(29,35,57));                    
+                    button2.setBackground(new Color(29,35,57));
+                    button3.setBackground(new Color(29,35,57));
+                    button4.setBackground(new Color(29,35,57));
+                    button5.setBackground(new Color(29,35,57));                                                                                                    
+                    button6.setBackground(new Color(29,35,57));
+                    button7.setBackground(new Color(29,35,57));                    
+                    button8.setBackground(new Color(29,35,57));                    
+                    button9.setBackground(new Color(29,35,57));                    
+                    button10.setBackground(new Color(29,35,57));
+                    button11.setBackground(new Color(29,35,57));
+                    button12.setBackground(new Color(29,35,57));
+                    button13.setBackground(new Color(29,35,57));
+                    button14.setBackground(new Color(78,98,125));
+                    buttonSALIR.setBackground(new Color(29,35,57));                                        
+                    areaTexto.append("\n"+btn1.getText());                    
+                    anali.menu(15);
+                    
+                    String palabra = anali.publicar();
+                    areaTexto2.append("\n"+palabra);
+                }
+                if(btn1.getText() == "Analizar sintacticamente una cadena en LL1"){
+                    areaTexto2.setText("");
+                    button1.setBackground(new Color(29,35,57));                    
+                    button2.setBackground(new Color(29,35,57));
+                    button3.setBackground(new Color(29,35,57));
+                    button4.setBackground(new Color(29,35,57));
+                    button5.setBackground(new Color(29,35,57));                                                                                                    
+                    button6.setBackground(new Color(29,35,57));
+                    button7.setBackground(new Color(29,35,57));                    
+                    button8.setBackground(new Color(29,35,57));                    
+                    button9.setBackground(new Color(29,35,57));                    
+                    button10.setBackground(new Color(29,35,57));
+                    button11.setBackground(new Color(29,35,57));
+                    button12.setBackground(new Color(29,35,57));
+                    button13.setBackground(new Color(29,35,57));
+                    button14.setBackground(new Color(29,35,57));
+                    button15.setBackground(new Color(78,98,125));
+                    buttonSALIR.setBackground(new Color(29,35,57));                                        
+                    areaTexto.append("\nAnalizar sintac con LL1");
+                    anali.menu(16);
+                    
+                    String palabra = anali.publicar();
+                    areaTexto2.append("\n"+palabra);
                 }
             }
         };
@@ -546,6 +613,8 @@ public class ventana extends JFrame{
         button11.addActionListener(oyente);
         button12.addActionListener(oyente);
         button13.addActionListener(oyente);
+        button14.addActionListener(oyente);
+        button15.addActionListener(oyente);
         buttonSALIR.addActionListener(oyente);        
         
         this.getContentPane().add(panel1);
